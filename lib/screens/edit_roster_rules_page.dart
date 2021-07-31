@@ -9,9 +9,16 @@ class RosterRulesPage extends StatefulWidget {
 }
 
 class _RosterRulesPageState extends State<RosterRulesPage> {
-  String? _selection;
+  //String? _selection;
+  String? _day_shift_employee;
+  String? _evening_shift_employee;
+  String? _night_shift_employee;
+  String? _roster_rules;
+  String? _night_shift_mode;
+  String? _shift_duration_map;
 
-  List options = ['Option 1', 'Option 2'];
+
+  List options = ['1. Night shift in priority', '2. Employees leave in priority'];
 
   final _titleCtrlr = TextEditingController();
   final _numCtrlr = TextEditingController();
@@ -46,18 +53,18 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                 leading: Container(
                   height: double.infinity,
                   child: Icon(
-                    Icons.menu,
+                    Icons.alt_route_outlined,
                     size: 30,
                   ),
                 ),
                 title: DropdownButton(
                   isExpanded: true,
                   dropdownColor: Colors.white,
-                  hint: Text("Select Option"),
-                  value: _selection,
+                  hint: Text("Select Night Shift Mode"),
+                  value: _night_shift_mode,
                   onChanged: (value) {
                     setState(() {
-                      _selection = value.toString();
+                      _night_shift_mode = value.toString();
                     });
                   },
                   items: options.map((value) {
