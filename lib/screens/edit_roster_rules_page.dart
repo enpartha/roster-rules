@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 
@@ -9,12 +10,22 @@ class RosterRulesPage extends StatefulWidget {
 }
 
 class _RosterRulesPageState extends State<RosterRulesPage> {
-  String? _selection;
+  //String? _selection;
+  String? _day_shift_employee;
+  String? _evening_shift_employee;
+  String? _night_shift_employee;
+  String? _roster_rules;
+  String? _night_shift_mode;
+  String? _shift_duration_map;
 
-  List options = ['Option 1', 'Option 2'];
+  String _text = "0";
+
+  List options = ['1. Night shift in priority', '2. Employees leave in priority'];
 
   final _titleCtrlr = TextEditingController();
   final _numCtrlr = TextEditingController();
+
+  final _num_trainee_numbers = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -46,18 +57,18 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                 leading: Container(
                   height: double.infinity,
                   child: Icon(
-                    Icons.menu,
+                    Icons.alt_route_outlined,
                     size: 30,
                   ),
                 ),
                 title: DropdownButton(
                   isExpanded: true,
                   dropdownColor: Colors.white,
-                  hint: Text("Select Option"),
-                  value: _selection,
+                  hint: Text("Select Night Shift Mode"),
+                  value: _night_shift_mode,
                   onChanged: (value) {
                     setState(() {
-                      _selection = value.toString();
+                      _night_shift_mode = value.toString();
                     });
                   },
                   items: options.map((value) {
@@ -72,19 +83,71 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                 leading: Container(
                   height: double.infinity,
                   child: Icon(
-                    Icons.collections,
+                    Icons.art_track,
+                    color: Colors.red,
                     size: 30,
                   ),
                 ),
                 title: TextFormField(
                   decoration: InputDecoration(
-                    labelText: "Number Input",
+                    labelText: "Night Shift Senior Employee",
                   ),
                   controller: _numCtrlr,
                   keyboardType: TextInputType.number,
                 ),
+
               ),
+              DefaultTextStyle.merge(
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Roboto',
+                  letterSpacing: 0.5,
+                  fontSize: 18,
+                  height: 2,
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton (
+                          onPressed: () => {
+                            _num_trainee_numbers.text = '1',
+                            print("S_night_shift_mode: $_night_shift_mode"),
+                          },
+                          child: Text('<'),
+                          //other properties
+                        ),
+
+                        TextField(
+                          keyboardType: TextInputType.number,
+                          onChanged: (v)=>setState((){_text=v;}),
+                          controller: _num_trainee_numbers,
+                        ),
+                        ElevatedButton (
+                          onPressed: () => {
+                            _num_trainee_numbers.text = "sd",
+                            print("E_night_shift_mode: $_night_shift_mode"),
+                          },
+                          child: Text('>'),
+                          //other properties
+                        ),
+                      ]
+                  ),
+                ),
+              ),
+
+              ElevatedButton (
+                onPressed: () => {
+                  print("_night_shift_mode: $_night_shift_mode"),
+                },
+                child: Text('Submit'),
+                //other properties
+              ),
+
             ],
+
           ),
         ),
       ),
