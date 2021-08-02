@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 
@@ -20,12 +19,15 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
 
   String _text = "0";
 
-  List options = ['1. Night shift in priority', '2. Employees leave in priority'];
+  List options = [
+    '1. Night shift in priority',
+    '2. Employees leave in priority'
+  ];
 
   final _titleCtrlr = TextEditingController();
   final _numCtrlr = TextEditingController();
 
-  final _num_trainee_numbers = TextEditingController();
+  final _numberOfTraineeCtrlr = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,7 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                 title: DropdownButton(
                   isExpanded: true,
                   dropdownColor: Colors.white,
-                  hint: Text("Select Night Shift Mode"),
+                  hint: Text("Select Priority Mode"),
                   value: _night_shift_mode,
                   onChanged: (value) {
                     setState(() {
@@ -95,59 +97,57 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                   controller: _numCtrlr,
                   keyboardType: TextInputType.number,
                 ),
-
               ),
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          onPressed: () => {
-                            _num_trainee_numbers.text = '1',
-                            print("S_night_shift_mode: $_night_shift_mode"),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
-
-                        TextField(
-                          keyboardType: TextInputType.number,
-                          onChanged: (v)=>setState((){_text=v;}),
-                          controller: _num_trainee_numbers,
-                        ),
-                        ElevatedButton (
-                          onPressed: () => {
-                            _num_trainee_numbers.text = "sd",
-                            print("E_night_shift_mode: $_night_shift_mode"),
-                          },
-                          child: Text('>'),
-                          //other properties
-                        ),
-                      ]
+              // DefaultTextStyle.merge(
+              //   style: TextStyle(
+              //     color: Colors.black,
+              //     fontWeight: FontWeight.w800,
+              //     fontFamily: 'Roboto',
+              //     letterSpacing: 0.5,
+              //     fontSize: 18,
+              //     height: 2,
+              //   ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  ElevatedButton(
+                    onPressed: () => {
+                      _numberOfTraineeCtrlr.text = '1',
+                      print("S_night_shift_mode: $_night_shift_mode"),
+                    },
+                    child: Text('<'),
+                    //other properties
                   ),
-                ),
+                  Container(
+                    height: 50,
+                    width: 60,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      onChanged: (v) => setState(() {
+                        _text = v;
+                      }),
+                      controller: _numberOfTraineeCtrlr,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => {
+                      _numberOfTraineeCtrlr.text = "sd",
+                      print("E_night_shift_mode: $_night_shift_mode"),
+                    },
+                    child: Text('>'),
+                    //other properties
+                  ),
+                ]),
               ),
 
-              ElevatedButton (
+              ElevatedButton(
                 onPressed: () => {
                   print("_night_shift_mode: $_night_shift_mode"),
                 },
                 child: Text('Submit'),
                 //other properties
               ),
-
             ],
-
           ),
         ),
       ),
