@@ -1005,7 +1005,7 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
   Future<void> _uploadDataToServer() async {
 
 
-    CollectionReference users = FirebaseFirestore.instance.collection('data');
+    CollectionReference users = FirebaseFirestore.instance.collection('E005_Unit');
 
     // _shiftedEmployees.putIfAbsent("NS", () => 1);
     // _shiftedEmployees.putIfAbsent("NJ", () => 1);
