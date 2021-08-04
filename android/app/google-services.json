@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "560003138542",
+    "firebase_url": "https://nursing2-c1846-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "nursing2-c1846",
+    "storage_bucket": "nursing2-c1846.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560003138542:android:cbb5873ead1be94cc344ff",
+        "android_client_info": {
+          "package_name": "com.example.roster_rules"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "560003138542-likdnt4egk24m0lr44cmh0m4reqkucgo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMrcx5ruWsvJhB5dg1FqZbNHQYWprcqgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "560003138542-likdnt4egk24m0lr44cmh0m4reqkucgo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
