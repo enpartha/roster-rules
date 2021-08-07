@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,13 +14,12 @@ class RosterRulesPage extends StatefulWidget {
 class _RosterRulesPageState extends State<RosterRulesPage> {
   //String? _selection;
 
-  _RosterRulesPageState(){
-
+  _RosterRulesPageState() {
     this._totalNumberOfEmployees = new Map();
 
     _totalNumberOfEmployees.putIfAbsent("S", () => 10);
     _totalNumberOfEmployees.putIfAbsent("J", () => 10);
-    _totalNumberOfEmployees.putIfAbsent("JS", () => 5);//JS
+    _totalNumberOfEmployees.putIfAbsent("JS", () => 5); //JS
     _totalNumberOfEmployees.putIfAbsent("T", () => 0);
 
     _shiftedEmployees.putIfAbsent("NS", () => 1);
@@ -34,9 +32,9 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
     _shiftedEmployees.putIfAbsent("EJ", () => 1);
     _shiftedEmployees.putIfAbsent("ET", () => 0);
 
-    print("_totalNumberOfEmployees: "+_totalNumberOfEmployees.toString());
+    print("_totalNumberOfEmployees: " + _totalNumberOfEmployees.toString());
 
-    ctext = _getText(  );
+    ctext = _getText();
     _total = TextEditingController();
     _nightSin = TextEditingController();
     _nightJun = TextEditingController();
@@ -79,10 +77,12 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
 
   String _text = "0";
 
-  List options = ['1. Night shift in priority', '2. Employees leave in priority'];
+  List options = [
+    '1. Night shift in priority',
+    '2. Employees leave in priority'
+  ];
 
   final _titleCtrlr = TextEditingController();
-
 
   TextEditingController _nightSin = TextEditingController();
   TextEditingController _nightJun = TextEditingController();
@@ -99,13 +99,129 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
 
   String ctext = "";
 
-  TextEditingController _total  = TextEditingController();
+  TextEditingController _total = TextEditingController();
 
+  Widget myRuleSetter({
+    TextEditingController? controller,
+    String? controllerType,
+    String? labelText,
+    Color primary = Colors.yellow,
+  }) {
+    return DefaultTextStyle.merge(
+      style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w800,
+        fontFamily: 'Roboto',
+        letterSpacing: 0.5,
+        fontSize: 18,
+        height: 2,
+      ),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: primary, // background
+              onPrimary: Colors.white, // foreground
+            ),
+            onPressed: () => {
+              if (controllerType == 'maxShiftCount')
+                controller!.text = _getShiftCount(false).toString()
+              else if (controllerType == 'maxNightShift')
+                controller!.text = _getNightShiftEmployeeCount(false).toString()
+              else if (controllerType == 'nightSeniors')
+                controller!.text =
+                    _controlEmployeeCount("S", "NS", false).toString()
+              else if (controllerType == 'nightJuniors')
+                controller!.text =
+                    _controlEmployeeCount("J", "NJ", false).toString()
+              else if (controllerType == 'nightTrainees')
+                controller!.text =
+                    _controlEmployeeCount("T", "NT", false).toString()
+              else if (controllerType == 'morningSeniors')
+                controller!.text =
+                    _controlEmployeeCount("S", "DS", false).toString()
+              else if (controllerType == 'morningJuniors')
+                controller!.text =
+                    _controlEmployeeCount("J", "DJ", false).toString()
+              else if (controllerType == 'morningTrainees')
+                controller!.text =
+                    _controlEmployeeCount("T", "DT", false).toString()
+              else if (controllerType == 'eveningSeniors')
+                controller!.text =
+                    _controlEmployeeCount("S", "ES", false).toString()
+              else if (controllerType == 'eveningJuniors')
+                controller!.text =
+                    _controlEmployeeCount("J", "EJ", false).toString()
+              else if (controllerType == 'eveningTrainees')
+                controller!.text =
+                    _controlEmployeeCount("T", "ET", false).toString()
+            },
+            child: Text('<'),
+            //other properties
+          ),
+          Container(
+            height: 50,
+            width: 150,
+            child: TextField(
+              readOnly: true,
+              decoration: InputDecoration(
+                  labelText: labelText, fillColor: Colors.black),
+              textAlign: TextAlign.center,
+              onChanged: (v) => setState(() {
+                _text = v;
+              }),
+              controller: controller,
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: primary, // background
+              onPrimary: Colors.white, // foreground
+            ),
+            onPressed: () => {
+              if (controllerType == 'maxShiftCount')
+                controller!.text = _getShiftCount(true).toString()
+              else if (controllerType == 'maxNightShift')
+                controller!.text = _getNightShiftEmployeeCount(true).toString()
+              else if (controllerType == 'nightSeniors')
+                controller!.text =
+                    _controlEmployeeCount("S", "NS", true).toString()
+              else if (controllerType == 'nightJuniors')
+                controller!.text =
+                    _controlEmployeeCount("J", "NJ", true).toString()
+              else if (controllerType == 'nightTrainees')
+                controller!.text =
+                    _controlEmployeeCount("T", "NT", true).toString()
+              else if (controllerType == 'morningSeniors')
+                controller!.text =
+                    _controlEmployeeCount("S", "DS", true).toString()
+              else if (controllerType == 'morningJuniors')
+                controller!.text =
+                    _controlEmployeeCount("J", "DJ", true).toString()
+              else if (controllerType == 'morningTrainees')
+                controller!.text =
+                    _controlEmployeeCount("T", "DT", true).toString()
+              else if (controllerType == 'eveningSeniors')
+                controller!.text =
+                    _controlEmployeeCount("S", "ES", true).toString()
+              else if (controllerType == 'eveningJuniors')
+                controller!.text =
+                    _controlEmployeeCount("J", "EJ", true).toString()
+              else if (controllerType == 'eveningTrainees')
+                controller!.text =
+                    _controlEmployeeCount("T", "ET", true).toString()
+            },
+            child: Text('>'),
+          ),
+        ]),
+      ),
+    );
+  }
 
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-
     //_totalNumberOfEmployees.putIfAbsent(key, () => null);
 
     return Scaffold(
@@ -117,7 +233,6 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-
               ListTile(
                 leading: Container(
                   height: double.infinity,
@@ -159,9 +274,17 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                   }).toList(),
                 ),
               ),
+              myRuleSetter(
+                  controller: _maximumShiftCountInAWeek,
+                  controllerType: 'maxShiftCount',
+                  labelText: "Max continue shift "),
+              myRuleSetter(
+                  controller: _maximumNightShiftInAWeek,
+                  controllerType: 'maxNightShift',
+                  labelText: "Max Night shift ",
+                  primary: Colors.purple),
 
-
-
+              /// total employee
               DefaultTextStyle.merge(
                 style: TextStyle(
                   color: Colors.black,
@@ -172,130 +295,11 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                   height: 2,
                 ),
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,20,20,20),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.yellow, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _maximumShiftCountInAWeek.text = _getShiftCount(false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
-
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                                labelText: "Max continue shift ",
-                                fillColor: Colors.black
-                            ),
-                            textAlign: TextAlign.center,
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _maximumShiftCountInAWeek,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.yellow, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _maximumShiftCountInAWeek.text = _getShiftCount(true).toString(),
-                          },
-                          child: Text('>'),
-
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-
-
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,20,20,20),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.purple, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _maximumNightShiftInAWeek.text = _getNightShiftEmployeeCount(false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
-
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                                labelText: "Max Night shift ",
-                                fillColor: Colors.black
-                            ),
-                            textAlign: TextAlign.center,
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _maximumNightShiftInAWeek,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.purple, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _maximumNightShiftInAWeek.text = _getNightShiftEmployeeCount(true).toString(),
-                          },
-                          child: Text('>'),
-
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-
-/// total employee
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,20,20,20),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-
                           height: 100,
                           width: 200,
                           child: TextField(
@@ -308,539 +312,81 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
                               enabledBorder: InputBorder.none,
                               errorBorder: InputBorder.none,
                               disabledBorder: InputBorder.none,
-                              contentPadding:
-                              EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-
+                              contentPadding: EdgeInsets.only(
+                                  left: 15, bottom: 11, top: 11, right: 15),
                             ),
-
 
                             //text : "_getText( map )",
                             controller: _total,
                           ),
                         ),
-                      ]
-                  ),
+                      ]),
                 ),
               ),
 
-///Night shift
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,20,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _nightSin.text = ""+_controlEmployeeCount ( "S" ,"NS", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
+              ///Night shift
 
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Night Seniors",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _nightSin,
-                            textAlign: TextAlign.center,
-                          ),
+              myRuleSetter(
+                  controller: _nightSin,
+                  controllerType: 'nightSeniors',
+                  labelText: "Night Seniors",
+                  primary: Colors.red),
 
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _nightSin.text = ""+_controlEmployeeCount ( "S" ,"NS", true).toString(),
-                          },
-                          child: Text('>'),
+              myRuleSetter(
+                  controller: _nightJun,
+                  controllerType: 'nightJuniors',
+                  labelText: "Night Juniors",
+                  primary: Colors.red),
 
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                    padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _nightJun.text =  ""+_controlEmployeeCount ( "J" ,"NJ", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
+              myRuleSetter(
+                  controller: _nightTri,
+                  controllerType: 'nightTrainees',
+                  labelText: "Night Trainees",
+                  primary: Colors.red),
 
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Night Juniors",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _nightJun,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _nightJun.text =  ""+_controlEmployeeCount ( "J" ,"NJ", true).toString(),
-                          },
-                          child: Text('>'),
+              /// Morning shift
 
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _nightTri.text =  ""+_controlEmployeeCount ( "T" ,"NT", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
+              myRuleSetter(
+                  controller: _daySin,
+                  controllerType: 'morningSeniors',
+                  labelText: "Morning Seniors",
+                  primary: Colors.green),
 
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Night Trainees",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _nightTri,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _nightTri.text = ""+_controlEmployeeCount ( "T" ,"NT", true).toString(),
-                          },
-                          child: Text('>'),
+              myRuleSetter(
+                  controller: _dayJun,
+                  controllerType: 'morningJuniors',
+                  labelText: "Morning Juniors",
+                  primary: Colors.green),
 
-                        ),
-                      ]
-                  ),
-                ),
-              ),
+              myRuleSetter(
+                  controller: _dayTri,
+                  controllerType: 'morningTrainees',
+                  labelText: "Morning Trainees",
+                  primary: Colors.green),
 
-/// Morning shift
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,20,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _daySin.text = ""+_controlEmployeeCount ( "S" ,"DS", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
+              /// evening shift
 
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Morning Seniors",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _daySin,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _daySin.text = ""+_controlEmployeeCount ( "S" ,"DS", true).toString(),
-                          },
-                          child: Text('>'),
+              myRuleSetter(
+                  controller: _evSin,
+                  controllerType: 'eveningSeniors',
+                  labelText: "Evening Seniors",
+                  primary: Colors.orange),
 
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _dayJun.text = ""+_controlEmployeeCount ( "J" ,"DJ", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
+              myRuleSetter(
+                  controller: _evJun,
+                  controllerType: 'eveningJuniors',
+                  labelText: "Evening Juniors",
+                  primary: Colors.orange),
 
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Morning Juniors",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _dayJun,
-                            textAlign: TextAlign.center,
-                          ),
+              myRuleSetter(
+                  controller: _evTri,
+                  controllerType: 'eveningTrainees',
+                  labelText: "Evening Trainees",
+                  primary: Colors.orange),
 
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _dayJun.text = ""+_controlEmployeeCount ( "J" ,"DJ", true).toString(),
-                          },
-                          child: Text('>'),
-
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _dayTri.text = ""+_controlEmployeeCount ( "T" ,"DT", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
-
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Morning Trainees",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _dayTri,
-                            textAlign: TextAlign.center,
-                          ),
-
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.green, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _dayTri.text = ""+_controlEmployeeCount ( "T" ,"DT", true).toString(),
-                          },
-                          child: Text('>'),
-
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-
-/// evening shift
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,20,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _evSin.text = ""+_controlEmployeeCount ( "S" ,"ES", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
-
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Evening Seniors",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _evSin,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _evSin.text = ""+_controlEmployeeCount ( "S" ,"ES", true).toString(),
-                          },
-                          child: Text('>'),
-
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _evJun.text = ""+_controlEmployeeCount ( "J" ,"EJ", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
-
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Evening Juniors",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _evJun,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _evJun.text = ""+_controlEmployeeCount ( "J" ,"EJ", true).toString(),
-                          },
-                          child: Text('>'),
-
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-              DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Roboto',
-                  letterSpacing: 0.5,
-                  fontSize: 18,
-                  height: 2,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _evTri.text = ""+_controlEmployeeCount ( "T" ,"ET", false).toString(),
-                          },
-                          child: Text('<'),
-                          //other properties
-                        ),
-
-                        Container(
-                          height: 50,
-                          width: 150,
-                          child: TextField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: "Evening Trainees",
-                            ),
-                            onChanged: (v) => setState(() {
-                              _text = v;
-                            }),
-                            controller: _evTri,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton (
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () => {
-                            _evTri.text = ""+_controlEmployeeCount ( "T" ,"ET", true).toString(),
-                          },
-                          child: Text('>'),
-
-                        ),
-                      ]
-                  ),
-                ),
-              ),
-
-
-
-              ElevatedButton (
+              ElevatedButton(
                 onPressed: () => {
-                   _uploadDataToServer(),
+                  _uploadDataToServer(),
                 },
                 child: Text('UPLOAD RULES'),
               ),
@@ -851,19 +397,18 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
     );
   }
 
-
-  String _getText( ){
-
+  String _getText() {
     Map<String, int> totalMap = _totalNumberOfEmployees;
-    Map<String, int> addedMap =_shiftedEmployees;
+    Map<String, int> addedMap = _shiftedEmployees;
 
-
-    int s = totalMap["S"]!, js = totalMap["JS"]!, j= totalMap["J"]!, t= totalMap["T"]!;
+    int s = totalMap["S"]!,
+        js = totalMap["JS"]!,
+        j = totalMap["J"]!,
+        t = totalMap["T"]!;
 
     int addedS = addedMap["NS"]! + addedMap["DS"]! + addedMap["ES"]!;
     int addedJ = addedMap["NJ"]! + addedMap["DJ"]! + addedMap["EJ"]!;
     int addedT = addedMap["NT"]! + addedMap["DT"]! + addedMap["ET"]!;
-
 
     int remainingValueS = s;
     int remainingValueSJ = js;
@@ -873,127 +418,135 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
     int seniorMaxValue = 0;
     int juniorMaxValue = 0;
 
-
-    if(addedS > s){
+    if (addedS > s) {
       remainingValueS = 0;
       seniorMaxValue = addedS - s;
-    }else{
+    } else {
       remainingValueS = s - addedS;
     }
-    if(addedJ > j){
+    if (addedJ > j) {
       remainingValueJ = 0;
       juniorMaxValue = addedJ - j;
-    }else{
+    } else {
       remainingValueJ = j - addedJ;
     }
 
     remainingValueSJ = js - (seniorMaxValue + juniorMaxValue);
     remainingValueT = t - addedT;
 
+    String result = "Senior : " +
+        remainingValueS.toString() +
+        " out of " +
+        s.toString() +
+        "\n" +
+        "JuSen : " +
+        remainingValueSJ.toString() +
+        " out of " +
+        js.toString() +
+        "\n" +
+        "Junior : " +
+        remainingValueJ.toString() +
+        " out of " +
+        j.toString() +
+        "\n" +
+        "Trainee : " +
+        remainingValueT.toString() +
+        " out of " +
+        t.toString();
 
-
-    String result =  "Senior : "+remainingValueS.toString()+" out of "+s.toString()
-        +"\n"+"JuSen : "+remainingValueSJ.toString()+" out of "+js.toString()
-        +"\n"+"Junior : "+remainingValueJ.toString()+" out of "+j.toString()
-        +"\n"+"Trainee : "+remainingValueT.toString()+" out of "+t.toString();
-
-    print("result : "+result);
+    print("result : " + result);
 
     return result;
-
   }
 
-  int _controlEmployeeCount ( String parentField ,String field, bool addOnField){
-
+  int _controlEmployeeCount(String parentField, String field, bool addOnField) {
     int totalEmployee = 0;
     int totalInSeniorJunior = 0;
     int addedEmployee = 0;
 
-    totalInSeniorJunior =  _totalNumberOfEmployees["JS"]!;
-    totalEmployee =  _totalNumberOfEmployees[parentField]!;
+    totalInSeniorJunior = _totalNumberOfEmployees["JS"]!;
+    totalEmployee = _totalNumberOfEmployees[parentField]!;
 
-    int consumed = _shiftedEmployees["N"+parentField]!+_shiftedEmployees["D"+parentField]!+_shiftedEmployees["E"+parentField]!;
+    int consumed = _shiftedEmployees["N" + parentField]! +
+        _shiftedEmployees["D" + parentField]! +
+        _shiftedEmployees["E" + parentField]!;
 
-    int s =  _totalNumberOfEmployees["S"]!;
-    int j =  _totalNumberOfEmployees["J"]!;
-    int js =  _totalNumberOfEmployees["JS"]!;
+    int s = _totalNumberOfEmployees["S"]!;
+    int j = _totalNumberOfEmployees["J"]!;
+    int js = _totalNumberOfEmployees["JS"]!;
 
-    int addedS = _shiftedEmployees["NS"]! + _shiftedEmployees["DS"]! + _shiftedEmployees["ES"]!;
-    int addedJ = _shiftedEmployees["NJ"]! + _shiftedEmployees["DJ"]! + _shiftedEmployees["EJ"]!;
+    int addedS = _shiftedEmployees["NS"]! +
+        _shiftedEmployees["DS"]! +
+        _shiftedEmployees["ES"]!;
+    int addedJ = _shiftedEmployees["NJ"]! +
+        _shiftedEmployees["DJ"]! +
+        _shiftedEmployees["EJ"]!;
 
-
-    addedEmployee =  _shiftedEmployees[field]!;
+    addedEmployee = _shiftedEmployees[field]!;
 
     print("remainingEmployee: $totalEmployee");
     print("addedEmployee: $addedEmployee");
     print("totalInSeniorJunior: $totalInSeniorJunior");
 
-    if(addOnField) { /// addition
-      if((totalEmployee - consumed) > 0){
+    if (addOnField) {
+      /// addition
+      if ((totalEmployee - consumed) > 0) {
         addedEmployee++;
-      }else if((parentField == "S") || ((parentField == "J"))){
-
-
-
+      } else if ((parentField == "S") || ((parentField == "J"))) {
         int incrementValueJ = 0;
         int incrementValueS = 0;
 
-        if(addedJ > j){
+        if (addedJ > j) {
           incrementValueJ = addedJ - j;
         }
-        if(addedS > s){
+        if (addedS > s) {
           incrementValueS = addedS - s;
         }
 
-        if( js > (incrementValueJ+incrementValueS)){
+        if (js > (incrementValueJ + incrementValueS)) {
           addedEmployee++;
         }
-
       }
-
-    }else{  /// subtraction
-      if((addedEmployee) > 0){
+    } else {
+      /// subtraction
+      if ((addedEmployee) > 0) {
         addedEmployee--;
       }
     }
 
     _shiftedEmployees[field] = addedEmployee;
 
-
     _total.text = _getText();
 
     return addedEmployee;
-
   }
 
-  int _getNightShiftEmployeeCount(bool addOnField){
-
+  int _getNightShiftEmployeeCount(bool addOnField) {
     int currentValue = _maxNightShift;
 
-    if(addOnField){
-      if(currentValue < 5){
+    if (addOnField) {
+      if (currentValue < 5) {
         currentValue++;
       }
-    }else{
-      if(currentValue > 3){
+    } else {
+      if (currentValue > 3) {
         currentValue--;
       }
     }
 
-    _maxNightShift =  currentValue;
+    _maxNightShift = currentValue;
     return currentValue;
   }
 
-  int _getShiftCount(bool addOnField){
-
+  int _getShiftCount(bool addOnField) {
     int currentValue = _maxShiftInAWeek;
 
-    if(addOnField){
-      if(currentValue < 6){
+    if (addOnField) {
+      if (currentValue < 6) {
         currentValue++;
       }
-    }else{
-      if(currentValue > 3){
+    } else {
+      if (currentValue > 3) {
         currentValue--;
       }
     }
@@ -1003,9 +556,8 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
   }
 
   Future<void> _uploadDataToServer() async {
-
-
-    CollectionReference users = FirebaseFirestore.instance.collection('E005_Unit');
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('E005_Unit');
 
     // _shiftedEmployees.putIfAbsent("NS", () => 1);
     // _shiftedEmployees.putIfAbsent("NJ", () => 1);
@@ -1018,26 +570,27 @@ class _RosterRulesPageState extends State<RosterRulesPage> {
     // _shiftedEmployees.putIfAbsent("ET", () => 0);
 
     String nightShiftModeValue = "NPM";
-    if(_nightShiftMode == '2. Employees leave in priority'){
+    if (_nightShiftMode == '2. Employees leave in priority') {
       nightShiftModeValue = "ELPM";
     }
 
     var data = {
-      'day_shift_employee': 'S:${_shiftedEmployees["DS"]},J:${_shiftedEmployees["DJ"]}',
-      'evening_shift_employee': 'S:${_shiftedEmployees["ES"]},J:${_shiftedEmployees["EJ"]}',
-      'night_shift_employee': 'S:${_shiftedEmployees["NS"]},J:${_shiftedEmployees["NJ"]}',
+      'day_shift_employee':
+          'S:${_shiftedEmployees["DS"]},J:${_shiftedEmployees["DJ"]}',
+      'evening_shift_employee':
+          'S:${_shiftedEmployees["ES"]},J:${_shiftedEmployees["EJ"]}',
+      'night_shift_employee':
+          'S:${_shiftedEmployees["NS"]},J:${_shiftedEmployees["NJ"]}',
       'roster_rules': '1:$_maxNightShift,2:$_maxShiftInAWeek',
       "night_shift_mode": nightShiftModeValue
     };
 
-    print("data: "+data.toString());
+    print("data: " + data.toString());
 
-      users.doc(_unitID)
+    users
+        .doc(_unitID)
         .update(data)
         .then((value) => {print("to add user: ")})
         .catchError((error) => print("Failed to add user: $error"));
-
   }
-
-
 }
